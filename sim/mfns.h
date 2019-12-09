@@ -48,7 +48,7 @@ void	m_taintmem(Engine *E, State *S, uint64_t addr, uint32_t taintstartPC, uint3
 void	m_taintreg(Engine *E, State *S, uint64_t addr, uint32_t taintstartPC, uint32_t taintendPC, uint64_t taintCol);
 void	m_ftaintreg(Engine *E, State *S, uint64_t addr, uint32_t taintstartPC, uint32_t taintendPC, uint64_t taintCol);
 void	m_riscvdumptaintdistr(Engine *E, State *S);
-void	taintprop(Engine *E, State *S, uint64_t immtaint1, uint64_t immtaint2, uint64_t AddrOut, SunflowerTaintMemType memType);
+void	taintprop(Engine *E, State *S, uint8_t issuedOp, uint64_t immtaint1, uint64_t immtaint2, uint64_t AddrOut, SunflowerTaintMemType memType);
 uint64_t taintretmems(Engine *E, State *S, uint64_t Addr1, int NumBytes);
 uint64_t taintretreg(Engine *E, State *S, uint64_t rs1);
 uint64_t ftaintretreg(Engine *E, State *S, uint64_t rs1);
