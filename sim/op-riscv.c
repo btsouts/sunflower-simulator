@@ -469,6 +469,17 @@ void riscv_lui(Engine *E, State *S, uint8_t rd, uint32_t imm0)
 {
 	reg_set_riscv(E, S, rd, (imm0<<12));
 
+	if (SF_TAINTANALYSIS)
+	{
+		/*
+		*	Clear taint of target register.
+		*/
+		taintprop(E, S,	0,	0,
+				(uint64_t)rd,		kSunflowerTaintMemTypeRegister);
+
+		
+	}
+
 	return;
 }
 
@@ -789,6 +800,9 @@ void riscv_sb(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint16_t imm0, uint
 
 	if (SF_TAINTANALYSIS)
 	{
+		printf("op-riscv-riscv_sb: rs1 0x%X rs2 0x%X imm0 0x%X imm5 0x%X\n",
+				rs1, rs2, imm0, imm5);
+		
 		taintprop(E, S,	taintretreg(E,S,rs1),	taintretreg(E,S,rs2),
 					(uint64_t)addr,	kSunflowerTaintMemTypeMemory);
 		

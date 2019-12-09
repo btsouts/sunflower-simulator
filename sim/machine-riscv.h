@@ -42,12 +42,12 @@ struct RiscvState
 	uint32_t fCSR;
 	RiscvPipe P;
 	UncertainState *uncertain;
-	uint32_t instruction_distribution[RISCV_OP_MAX];
+	uint32_t instruction_distribution[RV32UN_OP_UNMAX];
 
 	/*
 	 *	Taint analysis for registers (need last entry for PC's taint entry 32)
 	 */
-	ShadowMem instruction_taintDistribution[RISCV_OP_MAX];
+	ShadowMem instruction_taintDistribution[RV32UN_OP_UNMAX];
 	ShadowMem taintR[RISCV_XMAX+1];
 	ShadowMem taintfR[RF32FD_fMAX+1];
 

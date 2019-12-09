@@ -315,6 +315,9 @@ riscvfaststep(Engine *E, State *S, int drain_pipeline)
 
 		riscvdecode(E, tmpinstr, &(S->riscv->P.EX));
 
+		if (S->riscv->P.EX.op >= RISCV_OP_MAX) {
+			printf("POINT A: P.EX.op >= RISCV_OP_MAX. P.EX.op is 0x%X\n",S->riscv->P.EX.op);
+		}
 		S->riscv->instruction_distribution[S->riscv->P.EX.op]++;
 
 		S->riscv->P.EX.fetchedpc = S->PC;
@@ -541,6 +544,9 @@ riscvstep(Engine *E, State *S, int drain_pipeline)
 					(*(S->riscv->P.EX.fptr))(E, S);	/*	riscv_nop??	*/
 					S->dyncnt++;
 
+					if (S->riscv->P.EX.op >= RISCV_OP_MAX) {
+						printf("POINT B: P.EX.op >= RISCV_OP_MAX. P.EX.op is 0x%X\n",S->riscv->P.EX.op);
+					}
 					S->riscv->instruction_distribution[S->riscv->P.EX.op]++;
 
 					break;
@@ -555,6 +561,9 @@ riscvstep(Engine *E, State *S, int drain_pipeline)
 								(tmp&maskExtractBits7to11) >> 7);
 					S->dyncnt++;
 
+					if (S->riscv->P.EX.op >= RISCV_OP_MAX) {
+						printf("POINT C: P.EX.op >= RISCV_OP_MAX. P.EX.op is 0x%X\n",S->riscv->P.EX.op);
+					}
 					S->riscv->instruction_distribution[S->riscv->P.EX.op]++;
 
 					break;
@@ -569,6 +578,9 @@ riscvstep(Engine *E, State *S, int drain_pipeline)
 								(tmp&maskExtractBits20to31) >> 20);
 					S->dyncnt++;
 
+					if (S->riscv->P.EX.op >= RISCV_OP_MAX) {
+						printf("POINT D: P.EX.op >= RISCV_OP_MAX. P.EX.op is 0x%X\n",S->riscv->P.EX.op);
+					}
 					S->riscv->instruction_distribution[S->riscv->P.EX.op]++;
 
 					break;
@@ -584,6 +596,9 @@ riscvstep(Engine *E, State *S, int drain_pipeline)
 								(tmp&maskExtractBits25to31) >> 25);
 					S->dyncnt++;
 
+					if (S->riscv->P.EX.op >= RISCV_OP_MAX) {
+						printf("POINT E: P.EX.op >= RISCV_OP_MAX. P.EX.op is 0x%X\n",S->riscv->P.EX.op);
+					}
 					S->riscv->instruction_distribution[S->riscv->P.EX.op]++;
 
 					break;
@@ -626,6 +641,9 @@ riscvstep(Engine *E, State *S, int drain_pipeline)
 								(tmp&maskExtractBits12to31) >> 12);
 					S->dyncnt++;
 
+					if (S->riscv->P.EX.op >= RISCV_OP_MAX) {
+						printf("POINT F: P.EX.op >= RISCV_OP_MAX. P.EX.op is 0x%X\n",S->riscv->P.EX.op);
+					}
 					S->riscv->instruction_distribution[S->riscv->P.EX.op]++;
 
 					break;
@@ -644,6 +662,9 @@ riscvstep(Engine *E, State *S, int drain_pipeline)
 								(tmp&maskExtractBits12to19) >> 12,
 								(tmp&maskExtractBit31) >> 31);
 					S->dyncnt++;				*/
+					if (S->riscv->P.EX.op >= RISCV_OP_MAX) {
+						printf("POINT G: P.EX.op >= RISCV_OP_MAX. P.EX.op is 0x%X\n",S->riscv->P.EX.op);
+					}
 					S->riscv->instruction_distribution[S->riscv->P.EX.op]++;
 					break;
 				}
@@ -740,6 +761,10 @@ riscvstep(Engine *E, State *S, int drain_pipeline)
 							(tmp&maskExtractBit20) >> 20,
 							(tmp&maskExtractBits12to19) >> 12,
 							(tmp&maskExtractBit31) >> 31);
+
+				if (S->riscv->P.ID.op >= RISCV_OP_MAX) {
+					printf("POINT H: P.ID.op >= RISCV_OP_MAX. P.EX.op is 0x%X\n",S->riscv->P.ID.op);
+				}			
 				S->riscv->instruction_distribution[S->riscv->P.ID.op]++;
 				}
 				else
@@ -752,6 +777,10 @@ riscvstep(Engine *E, State *S, int drain_pipeline)
 							(tmp&maskExtractBits25to30) >> 25,
 							(tmp&maskExtractBit7) >> 7,
 							(tmp&maskExtractBit31) >> 31);
+
+				if (S->riscv->P.ID.op >= RISCV_OP_MAX) {
+					printf("POINT I: P.ID.op >= RISCV_OP_MAX. P.EX.op is 0x%X\n",S->riscv->P.ID.op);
+				}			
 				S->riscv->instruction_distribution[S->riscv->P.ID.op]++;
 				}
 				S->dyncnt++;
@@ -954,7 +983,7 @@ riscvdumppipe(Engine *E, State *S)
 void
 riscvdumpdistribution(Engine *E, State *S)
 {
-	for(int i = 0; i < RISCV_OP_MAX; i++) {
+	for(int i = 0; i < RV32UN_OP_UNMAX; i++) {
 		mprint(E, S, nodeinfo, "%-8s {%d}\n", riscv_opstrs[i], S->riscv->instruction_distribution[i]);
 	}
 

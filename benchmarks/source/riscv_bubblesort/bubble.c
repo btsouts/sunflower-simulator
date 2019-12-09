@@ -1,16 +1,17 @@
 #include <printf.h>
 
+int abrakadabra[8];
+
 int main()
 {
-    int a[8];
-    a[0] = 563;
-    a[1] = 892;
-    a[2] = 8910;
-    a[3] = 76711;
-    a[4] = 61;
-    a[5] = 1523;
-    a[6] = 901;
-    a[7] = 162;
+    abrakadabra[0] = 563;
+    abrakadabra[1] = 892;
+    abrakadabra[2] = 8910;
+    abrakadabra[3] = 76711;
+    abrakadabra[4] = 61;
+    abrakadabra[5] = 1523;
+    abrakadabra[6] = 901;
+    abrakadabra[7] = 162;
 
     int tmp = 0;
 
@@ -18,16 +19,16 @@ int main()
     {
         for(int j = 0; j+i < 7; ++j)
         {
-            if(a[j] > a[j+1])
+            if(abrakadabra[j] > abrakadabra[j+1])
             {
-                tmp = a[j];
-                a[j] = a[j+1];
-                a[j+1] = tmp;
+                tmp = abrakadabra[j];
+                abrakadabra[j] = abrakadabra[j+1];
+                abrakadabra[j+1] = tmp;
             }
         }
     }
 
-    printf_("first element is %d\n", a[0]);
+    //printf_("first element is %d\n", abrakadabra[0]);
 
     return 0;
 }
