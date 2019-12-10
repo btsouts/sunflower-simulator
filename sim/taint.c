@@ -697,16 +697,16 @@ taintprop(Engine *E, State *S, uint8_t issuedOp,
 			printf("Discarded %s\n",riscv_opstrs[RISCV_OP_AUIPC]);
 			break;
 		case RISCV_OP_JAL:
-			printf("\nOp %s is triggered instruction_taintDistribution[issuedOp].taintCol 0x%llX immtaint1 0x%llX immtaint2 0x%llX S->riscv->taintR[32].taintCol 0x%llX\n", 
-					riscv_opstrs[issuedOp],S->riscv->instruction_taintDistribution[issuedOp].taintCol, immtaint1, immtaint2, S->riscv->taintR[32].taintCol);
+			//printf("\nOp %s is triggered instruction_taintDistribution[issuedOp].taintCol 0x%llX immtaint1 0x%llX immtaint2 0x%llX S->riscv->taintR[32].taintCol 0x%llX\n", 
+			//		riscv_opstrs[issuedOp],S->riscv->instruction_taintDistribution[issuedOp].taintCol, immtaint1, immtaint2, S->riscv->taintR[32].taintCol);
 
 			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
 					S->riscv->instruction_taintDistribution[issuedOp].taintCol
 					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
 			break;
 		case RISCV_OP_JALR:
-			printf("\nOp %s is triggered instruction_taintDistribution[issuedOp].taintCol 0x%llX immtaint1 0x%llX immtaint2 0x%llX S->riscv->taintR[32].taintCol 0x%llX\n", 
-					riscv_opstrs[issuedOp],S->riscv->instruction_taintDistribution[issuedOp].taintCol, immtaint1, immtaint2, S->riscv->taintR[32].taintCol);
+			//printf("\nOp %s is triggered instruction_taintDistribution[issuedOp].taintCol 0x%llX immtaint1 0x%llX immtaint2 0x%llX S->riscv->taintR[32].taintCol 0x%llX\n", 
+			//		riscv_opstrs[issuedOp],S->riscv->instruction_taintDistribution[issuedOp].taintCol, immtaint1, immtaint2, S->riscv->taintR[32].taintCol);
 
 			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
 					S->riscv->instruction_taintDistribution[issuedOp].taintCol
@@ -920,9 +920,14 @@ taintprop(Engine *E, State *S, uint8_t issuedOp,
 			break;
 
 		case kSunflowerTaintMemTypeRegister:
+			/* 
+			 * Omit rd=0 which jal for the pseudoinstruction j
+			 */
 
-			S->riscv->taintR[AddrOut].taintCol = outCol;
-
+			if (AddrOut != 0) 
+			{
+				S->riscv->taintR[AddrOut].taintCol = outCol;
+			}
 			break;
 
 		/* FIXME AddrOut is 64bit and max element is 33 */
@@ -939,7 +944,8 @@ taintprop(Engine *E, State *S, uint8_t issuedOp,
 			break;
 	}
 
-	printf("\n%s Sensors taintCol:\n", riscv_opstrs[issuedOp]);
+	printf("\n%s taintCol 0x%llX. immtaint1 0x%llX immtaint2 0x%llX. Regs taintCol:\n", 
+		riscv_opstrs[issuedOp], S->riscv->instruction_taintDistribution[issuedOp].taintCol, immtaint1, immtaint2);
 	for (int i=0; i<33; i++) 
 	{
 		printf("R%d(%s): 0x%llX,\t",i,reg_mapping[i],S->riscv->taintR[i].taintCol);

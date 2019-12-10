@@ -1,0 +1,14 @@
+all: main.o bme680.o
+	gcc main.o bme680.o -o myExecutable
+
+main.o: main.c
+	cp -R BME680_driver BME680_driver_patched;
+	gcc -c main.c
+
+bme680.o:	BME680_driver/bme680.c BME680_driver/bme680.h
+	patch BME680_driver_patched/bme680.c bme680.patch;
+	gcc -c BME680_driver_patched/bme680.c;
+
+clean:
+	rm -f *.o myExecutable;
+	rm -R BME680_driver_patched; 
