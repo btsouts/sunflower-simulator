@@ -559,6 +559,13 @@ void riscv_jalr(Engine *E, State *S, uint8_t rs1, uint8_t rd, uint16_t imm0)
 	/* FIXME check if replicating op codes is correct */
 	if (SF_TAINTANALYSIS)
 	{
+		/* 
+		 * From RISC-V manual
+		 * The address of the instruction following the jump (pc+4) is written to register rd. 
+		 * Register x0 can be used as the destination if the result is not required.
+		 */
+
+		/* This corresponds to adding savig pc+4 to rd */
 		taintprop(E, S,	RISCV_OP_JALR,
 				taintretreg(E,S,32),	0,
 				(uint64_t)rd,		kSunflowerTaintMemTypeRegister);
