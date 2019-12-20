@@ -315,8 +315,8 @@ taintprop(Engine *E, State *S, uint8_t issuedOp,
 	uint64_t immtaint1, uint64_t immtaint2,
 	uint64_t AddrOut, SunflowerTaintMemType memType)
 {
-	uint64_t outCol;
-	outCol = immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+	uint64_t taintControlFlowCol = immtaint1 | immtaint2 | S->riscv->taintControlFlowR[32].taintCol;
+	//////uint64_t taintControlFlowCol = immtaint1 | immtaint2 | S->riscv->taintControlFlowR[32].taintCol;
 
 	/*
 	if (outCol != (uint64_t) 0) {	
@@ -338,9 +338,7 @@ taintprop(Engine *E, State *S, uint8_t issuedOp,
 	{
 		case RISCV_OP_LUI:
 			//printf("LUI %s is triggered immtaint1 0x%llX immtaint2 0x%llX\n",riscv_opstrs[RISCV_OP_LUI],immtaint1,immtaint2);
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_AUIPC:
 			printf("Discarded %s\n",riscv_opstrs[RISCV_OP_AUIPC]);
@@ -349,186 +347,118 @@ taintprop(Engine *E, State *S, uint8_t issuedOp,
 			//printf("\nOp %s is triggered instruction_taintDistribution[issuedOp].taintCol 0x%llX immtaint1 0x%llX immtaint2 0x%llX S->riscv->taintR[32].taintCol 0x%llX\n", 
 			//		riscv_opstrs[issuedOp],S->riscv->instruction_taintDistribution[issuedOp].taintCol, immtaint1, immtaint2, S->riscv->taintR[32].taintCol);
 
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_JALR:
 			//printf("\nOp %s is triggered instruction_taintDistribution[issuedOp].taintCol 0x%llX immtaint1 0x%llX immtaint2 0x%llX S->riscv->taintR[32].taintCol 0x%llX\n", 
 			//		riscv_opstrs[issuedOp],S->riscv->instruction_taintDistribution[issuedOp].taintCol, immtaint1, immtaint2, S->riscv->taintR[32].taintCol);
 
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_BEQ:
 			//printf("BEQ %s is triggered immtaint1 0x%llX immtaint2 0x%llX\n",riscv_opstrs[RISCV_OP_BEQ],immtaint1,immtaint2);
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_BNE:
 			//printf("BNE %s is triggered immtaint1 0x%llX immtaint2 0x%llX\n",riscv_opstrs[RISCV_OP_BNE],immtaint1,immtaint2);
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_BLT:
 			//printf("BLT %s is triggered immtaint1 0x%llX immtaint2 0x%llX\n",riscv_opstrs[RISCV_OP_BLT],immtaint1,immtaint2);
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_BGE:
 			//printf("BGE %s is triggered immtaint1 0x%llX immtaint2 0x%llX\n",riscv_opstrs[RISCV_OP_BGE],immtaint1,immtaint2);
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_BLTU:
 			//printf("BLTU %s is triggered immtaint1 0x%llX immtaint2 0x%llX\n",riscv_opstrs[RISCV_OP_BLTU],immtaint1,immtaint2);
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_BGEU:
 			//printf("BGEU %s is triggered immtaint1 0x%llX immtaint2 0x%llX\n",riscv_opstrs[RISCV_OP_BGEU],immtaint1,immtaint2);
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_LB:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_LH:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_LW:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_LBU:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_LHU:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_SB:
 			//printf("RISCV_OP_SB: S->riscv->P.ID.op 0x%X %ud issuedOp 0x%X %ud \n",
 			//	S->riscv->P.ID.op,S->riscv->P.ID.op,issuedOp,issuedOp);
 
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_SW:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_ADDI:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_SLTI:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_SLTIU:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_XORI:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_ORI:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_ANDI:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_SLLI:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_SRLI:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_SRAI:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_ADD:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_SUB:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_SLL:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_SLT:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_SLTU:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_XOR:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_SRL:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_SRA:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_OR:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_AND:
-			S->riscv->instruction_taintDistribution[issuedOp].taintCol =
-					S->riscv->instruction_taintDistribution[issuedOp].taintCol
-					| immtaint1 | immtaint2 | S->riscv->taintR[32].taintCol;
+			S->riscv->instruction_taintDistribution[issuedOp].taintCol |= taintControlFlowCol;
 			break;
 		case RISCV_OP_FENCE:
 			printf("Discarded %s\n",riscv_opstrs[RISCV_OP_FENCE]);
@@ -568,7 +498,8 @@ taintprop(Engine *E, State *S, uint8_t issuedOp,
 	switch(memType)
 	{
 		case kSunflowerTaintMemTypeMemory:
-			S->TAINTMEM[AddrOut-S->TAINTMEMBASE].taintCol = outCol;
+			/* FIXME I changed it to OR. Check */
+			S->TAINTMEM[AddrOut-S->TAINTMEMBASE].taintCol |= taintControlFlowCol;
 			break;
 
 		case kSunflowerTaintMemTypeRegister:
@@ -578,13 +509,13 @@ taintprop(Engine *E, State *S, uint8_t issuedOp,
 
 			if (AddrOut != 0) 
 			{
-				S->riscv->taintR[AddrOut].taintCol = outCol;
+				S->riscv->taintControlFlowR[AddrOut].taintCol |= taintControlFlowCol;
 			}
 			break;
 
-		/* FIXME AddrOut is 64bit and max element is 33 */
 		case kSunflowerTaintMemTypefltRegister:
-			S->riscv->taintfR[AddrOut].taintCol = outCol;
+			/* FIXME I changed it to OR. Check */
+			S->riscv->taintfR[AddrOut].taintCol |= taintControlFlowCol;
 			break;
 
 		case kSunflowerTaintMemTypeInstruction:
@@ -600,7 +531,7 @@ taintprop(Engine *E, State *S, uint8_t issuedOp,
 		riscv_opstrs[issuedOp], S->riscv->instruction_taintDistribution[issuedOp].taintCol, AddrOut, memType, immtaint1, immtaint2);
 	for (int i=0; i<=RISCV_XMAX; i++) 
 	{
-		printf("R%d(%s): 0x%llX,\t",i,reg_mapping[i],S->riscv->taintR[i].taintCol);
+		printf("R%d(%s): 0x%llX,\t",i,reg_mapping[i],S->riscv->taintControlFlowR[i].taintCol);
 		if (i==7 || i==15 || i==23) {
 			printf("\n");		
 		}	
@@ -609,7 +540,7 @@ taintprop(Engine *E, State *S, uint8_t issuedOp,
 
 	if (AddrOut == 32) {
 		printf("AddrOut 32 issuedOp %s immtaint1 0x%llX immtaint2 0x%llX S->riscv->taintR[32].taintCol 0x%llX\n", 
-				riscv_opstrs[issuedOp], immtaint1, immtaint2, S->riscv->taintR[32].taintCol);
+				riscv_opstrs[issuedOp], immtaint1, immtaint2, S->riscv->taintControlFlowR[32].taintCol);
 	}
 
 	/*
@@ -661,7 +592,7 @@ taintretreg(Engine *E, State *S, uint64_t rs1)
 	}
 	else
 	{
-		outCol =  S->riscv->taintR[rs1].taintCol;
+		outCol =  S->riscv->taintControlFlowR[rs1].taintCol;
 	}
 	return outCol;
 }
@@ -694,7 +625,7 @@ taintclear(Engine *E, State *S,uint64_t addr, SunflowerTaintMemType memType)
 			break;
 
 		case kSunflowerTaintMemTypeRegister:	
-			S->riscv->taintR[addr].taintCol = 0;
+			S->riscv->taintControlFlowR[addr].taintCol = 0;
 			break;
 
 		case kSunflowerTaintMemTypefltRegister:
@@ -747,9 +678,9 @@ m_taintreg(Engine *E, State *S, uint64_t addr, uint32_t taintstartPC, uint32_t t
 
 	if (!RegMarked)
 	{
-		for (int i = 0; i < (sizeof(S->riscv->taintR)/sizeof(ShadowMem)) ; i++)
+		for (int i = 0; i < (sizeof(S->riscv->taintControlFlowR)/sizeof(ShadowMem)) ; i++)
 		{
-			S->riscv->taintR[i].memType = kSunflowerTaintMemTypeRegister;
+			S->riscv->taintControlFlowR[i].memType = kSunflowerTaintMemTypeRegister;
 		}
 		RegMarked = true;
 	}
