@@ -160,6 +160,183 @@ riscv_sub(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd)
 }
 
 void
+riscv_mul(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd)
+{
+	int64_t multiplicationResult=0;
+	int32_t resultLowerHalf=0;
+	
+	/* --------- */
+	multiplicationResult = reg_read_riscv(E, S, rs1) * reg_read_riscv(E, S, rs2);
+	resultLowerHalf = multiplicationResult & 0xFFFFFFFF;
+
+	if (multiplicationResult < 0)
+	{
+		resultLowerHalf = -resultLowerHalf;	
+	}
+
+	reg_set_riscv(E, S, rd, resultLowerHalf);
+
+	if (SF_TAINTANALYSIS)
+	{
+		/* FIXME */
+	}
+}
+
+void
+riscv_mulh(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd)
+{
+	int64_t multiplicationResult=0;
+	int32_t resultLowerHalf=0;
+
+	multiplicationResult = reg_read_riscv(E, S, rs1) * reg_read_riscv(E, S, rs2);
+	resultLowerHalf = (multiplicationResult >> 32) & 0xFFFFFFFF;
+
+	reg_set_riscv(E, S, rd, resultLowerHalf);
+
+	if (SF_TAINTANALYSIS)
+	{
+		/* FIXME */
+	}
+}
+
+void
+riscv_mulhu(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd)
+{
+	uint64_t multiplicationResult=0;
+	uint32_t resultLowerHalf=0;
+
+	multiplicationResult = reg_read_riscv(E, S, rs1) * reg_read_riscv(E, S, rs2);
+	resultLowerHalf = (multiplicationResult >> 32) & 0xFFFFFFFF;
+
+	reg_set_riscv(E, S, rd, resultLowerHalf);
+
+	if (SF_TAINTANALYSIS)
+	{
+		/* FIXME */
+	}
+}
+
+void
+riscv_mulhsu(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd)
+{
+	int64_t multiplicationResult=0;
+	int32_t resultLowerHalf=0;
+
+	multiplicationResult = reg_read_riscv(E, S, rs1) * reg_read_riscv(E, S, rs2);
+	resultLowerHalf = (multiplicationResult >> 32) & 0xFFFFFFFF;
+
+	reg_set_riscv(E, S, rd, resultLowerHalf);
+
+	if (SF_TAINTANALYSIS)
+	{
+		/* FIXME */
+	}
+}
+
+void
+riscv_div(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd)
+{
+	int32_t dividend, divisor, quotient;
+
+	dividend = (int32_t) reg_read_riscv(E, S, rs1);
+	divisor = (int32_t) reg_read_riscv(E, S, rs2);
+	
+	if (divisor != 0)
+	{
+		quotient = dividend / divisor;
+	}
+	else /* Volume I: RISC-V Unprivileged ISA V20190608-Base-Ratified - page 44 */
+	{
+		quotient = -1;
+	}
+	
+	reg_set_riscv(E, S, rd, quotient);
+
+	if (SF_TAINTANALYSIS)
+	{
+		/* FIXME */
+	}
+}
+
+void
+riscv_divu(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd)
+{
+	uint32_t dividend, divisor, quotient;
+
+	dividend = reg_read_riscv(E, S, rs1);
+	divisor = reg_read_riscv(E, S, rs2);
+	
+	if (divisor != 0)
+	{
+		quotient = dividend / divisor;
+	}
+	else /* Volume I: RISC-V Unprivileged ISA V20190608-Base-Ratified - page 44 */
+	{
+		quotient = 0xFFFFFFFF;
+	}
+	
+	//fprintf(stderr, "riscv_divu: rs2 %d. rs1 %d. Rd is %d.\n", rs2, rs1, rd);
+	//fprintf(stderr, "riscv_divu: dividend: %d. divisor: %d. quotient: %d.\n", dividend, divisor, quotient);
+
+	reg_set_riscv(E, S, rd, quotient);
+
+	if (SF_TAINTANALYSIS)
+	{
+		/* FIXME */
+	}
+}
+
+void
+riscv_rem(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd)
+{
+	int32_t dividend, divisor, remainder;
+
+	dividend = (int32_t) reg_read_riscv(E, S, rs1);
+	divisor = (int32_t) reg_read_riscv(E, S, rs2);
+	
+	if (divisor != 0)
+	{
+		remainder = dividend % divisor;
+	}
+	else /* Volume I: RISC-V Unprivileged ISA V20190608-Base-Ratified - page 44 */
+	{
+		remainder = dividend;
+	}
+	
+	reg_set_riscv(E, S, rd, remainder);
+
+	if (SF_TAINTANALYSIS)
+	{
+		/* FIXME */
+	}
+}
+
+void
+riscv_remu(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd)
+{
+	uint32_t dividend, divisor, remainder;
+
+	dividend = reg_read_riscv(E, S, rs1);
+	divisor = 	reg_read_riscv(E, S, rs2);
+	
+	if (divisor != 0)
+	{
+		remainder = dividend % divisor;
+	}
+	else /* Volume I: RISC-V Unprivileged ISA V20190608-Base-Ratified - page 44 */
+	{
+		remainder = dividend;
+	}
+	
+	reg_set_riscv(E, S, rd, remainder);
+
+	if (SF_TAINTANALYSIS)
+	{
+		/* FIXME */
+	}
+}
+
+void
 riscv_slt(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd)
 {
 	if ((int32_t) reg_read_riscv(E, S, rs1) < (int32_t) reg_read_riscv(E, S, rs2))
@@ -648,7 +825,7 @@ riscv_lw(Engine *E, State *S, uint8_t rs1, uint8_t rd, uint16_t imm0)
 {
 	uint32_t	addr = reg_read_riscv(E,S, rs1) + sign_extend(imm0, 12);
 
-	uint32_t	value = superHreadlong(E, S, addr);
+	uint32_t	value = riscVreadlong(E, S, addr);
 
 	reg_set_riscv(E, S, rd, value);
 
@@ -666,7 +843,7 @@ riscv_lh(Engine *E, State *S, uint8_t rs1, uint8_t rd, uint16_t imm0)
 {
 	uint32_t	addr = reg_read_riscv(E,S, rs1) + sign_extend(imm0, 12);
 
-	reg_set_riscv(E, S, rd, sign_extend(superHreadword(E, S, addr), 16));
+	reg_set_riscv(E, S, rd, sign_extend(riscVreadword(E, S, addr), 16));
 
 	if (SF_TAINTANALYSIS)
 	{
@@ -682,7 +859,7 @@ riscv_lhu(Engine *E, State *S, uint8_t rs1, uint8_t rd, uint16_t imm0)
 {
 	uint32_t	addr = reg_read_riscv(E,S, rs1) + sign_extend(imm0, 12);
 
-	reg_set_riscv(E, S, rd, (uint32_t) superHreadword(E, S, addr));
+	reg_set_riscv(E, S, rd, (uint32_t) riscVreadword(E, S, addr));
 
 	if (SF_TAINTANALYSIS)
 	{
@@ -697,7 +874,7 @@ void
 riscv_lb(Engine *E, State *S, uint8_t rs1, uint8_t rd, uint16_t imm0)
 {
 	uint32_t	addr = reg_read_riscv(E,S, rs1) + sign_extend(imm0, 12);
-	uint8_t		data_b = superHreadword(E, S, addr) & 0xff;
+	uint8_t		data_b = riscVreadword(E, S, addr) & 0xff;
 
 	reg_set_riscv(E, S, rd, sign_extend(data_b, 8));
 
@@ -714,7 +891,7 @@ void
 riscv_lbu(Engine *E, State *S, uint8_t rs1, uint8_t rd, uint16_t imm0)
 {
 	uint32_t	addr = reg_read_riscv(E,S, rs1) + sign_extend(imm0, 12);
-	uint8_t		data_b = superHreadword(E, S, addr) & 0xff;
+	uint8_t		data_b = riscVreadbyte(E, S, addr);
 
 	reg_set_riscv(E, S, rd, (uint32_t) data_b);
 
@@ -733,7 +910,7 @@ riscv_sw(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint16_t imm0, uint16_t 
 	uint32_t	addr = reg_read_riscv(E,S, rs1) + sign_extend(imm0 + (imm5 << 5), 12);
 	uint32_t	value = reg_read_riscv(E,S, rs2);
 
-	superHwritelong(E, S, addr, value);
+	riscVwritelong(E, S, addr, value);
 
 	if (SF_TAINTANALYSIS)
 	{
@@ -750,7 +927,7 @@ riscv_sh(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint16_t imm0, uint16_t 
 {
 	uint32_t	addr = reg_read_riscv(E,S, rs1) + sign_extend(imm0 + (imm5 << 5), 12);
 
-	superHwriteword(E, S,addr, reg_read_riscv(E,S, rs2) & 0xffff);
+	riscVwriteword(E, S,addr, reg_read_riscv(E,S, rs2) & 0xffff);
 
 	if (SF_TAINTANALYSIS)
 	{
@@ -767,7 +944,7 @@ riscv_sb(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint16_t imm0, uint16_t 
 {
 	uint32_t	addr = reg_read_riscv(E,S, rs1) + sign_extend(imm0 + (imm5 << 5), 12);
 
-	superHwritebyte(E, S,addr, reg_read_riscv(E,S, rs2) & 0xff);
+	riscVwritebyte(E, S,addr, reg_read_riscv(E,S, rs2) & 0xff);
 
 	if (SF_TAINTANALYSIS)
 	{
@@ -839,15 +1016,19 @@ riscv_csrrci(Engine *E, State *S)
 void
 riscv_ecall(Engine *E, State *S)
 {
+	unsigned long returnValue;
+
 	/*
 	 *	http://man7.org/linux/man-pages/man2/syscall.2.html
 	 */
 	uint32_t	syscall_num = reg_read_riscv(E, S, RISCV_A7);
 
-	riscv_sim_syscall(E, S, syscall_num,
+	returnValue = riscv_sim_syscall(E, S, syscall_num,
 				reg_read_riscv(E, S, RISCV_A0),
 				reg_read_riscv(E, S, RISCV_A1),
 				reg_read_riscv(E, S, RISCV_A2));
+	
+	reg_set_riscv(E, S, RISCV_A0, returnValue);
 	/*
 	 *	No taint propagation implemented in this function
 	 */
@@ -869,7 +1050,7 @@ rv32f_flw(Engine *E, State *S, uint8_t rs1, uint8_t rd, uint16_t imm0)
 	/*
 	 *	Perform a normal floating point load.
 	 */
-	freg_set_riscv(E, S, rd, nan_box(superHreadlong(E, S, addr)));
+	freg_set_riscv(E, S, rd, nan_box(riscVreadlong(E, S, addr)));
 
 	if (SF_TAINTANALYSIS)
 	{
@@ -913,7 +1094,7 @@ rv32f_fsw(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint16_t imm0, uint16_t
 	/*
 	 *	Perform a normal floating point store.
 	 */
-	superHwritelong(E, S, addr, freg_read_riscv(E, S, rs2));
+	riscVwritelong(E, S, addr, freg_read_riscv(E, S, rs2));
 
 	if (SF_TAINTANALYSIS)
 	{
@@ -1744,8 +1925,8 @@ void
 rv32d_fld(Engine *E, State *S, uint8_t rs1, uint8_t rd, uint16_t imm0)
 {
 	uint32_t	addr = reg_read_riscv(E, S, rs1) + sign_extend(imm0, 12);
-	uint64_t	data_lsw = (uint64_t)superHreadlong(E, S, addr);
-	uint64_t	data_msw = (uint64_t)superHreadlong(E, S, (addr+4));
+	uint64_t	data_lsw = (uint64_t)riscVreadlong(E, S, addr);
+	uint64_t	data_msw = (uint64_t)riscVreadlong(E, S, (addr+4));
 	uint64_t	data = (data_msw << 32) | data_lsw;
 
 	freg_set_riscv(E, S, rd, data);
@@ -1767,8 +1948,8 @@ rv32d_fsd(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint16_t imm0, uint16_t
 	uint32_t	data_lsw = (uint32_t)(data & 0xffffffff);
 	uint32_t	data_msw = (uint32_t)((data >> 32) & 0xffffffff);
 
-	superHwritelong(E, S, addr, data_lsw);
-	superHwritelong(E, S, addr+4, data_msw);
+	riscVwritelong(E, S, addr, data_lsw);
+	riscVwritelong(E, S, addr+4, data_msw);
 
 	if (SF_TAINTANALYSIS)
 	{

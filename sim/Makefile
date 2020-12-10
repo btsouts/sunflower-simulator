@@ -24,7 +24,7 @@ HEADERS =\
 	help.h\
 	instr-hitachi-sh.h\
 	instr-riscv.h\
-	inst_uncertain.h\
+	uncertain_upe.h\
 	latencies-riscv.h\
 	latencies-hitachi-sh.h\
 	listutils.h\
@@ -69,9 +69,10 @@ OBJS	=\
 	fdr.o\
 	machine-hitachi-sh.o\
 	machine-riscv.o\
-	inst_uncertain.o\
+	uncertain_upe.o\
 	main.o\
 	merror.o\
+	memory-hierarchy-riscv.o\
 	mmalloc.o\
 	mmu-hitachi-sh.o\
 	network-hitachi-sh.o\
@@ -120,7 +121,7 @@ op-ti-msp430.o: op-ti-msp430.c $(HEADERS) Makefile
 ##	$(LINT) $(CCFLAGS) $(INCLUDEDIRS) op-ti-msp430.c
 	$(CC) $(CCFLAGS) $(WFLAGS) $(INCLUDEDIRS) $(DBGFLAGS) $(OPTFLAGS) -c op-ti-msp430.c -o $@
 
-op-riscv.o: op-riscv.c memory-hierarchy.c regaccess-riscv.c $(HEADERS) Makefile
+op-riscv.o: op-riscv.c memory-hierarchy.c memory-hierarchy-riscv.c regaccess-riscv.c $(HEADERS) Makefile
 ##	$(LINT) $(CCFLAGS) $(INCLUDEDIRS) op-hitachi-sh.c
 	$(CC) $(CCFLAGS) $(WFLAGS) $(INCLUDEDIRS) $(DBGFLAGS) $(OPTFLAGS) -c op-riscv.c -o $@
 

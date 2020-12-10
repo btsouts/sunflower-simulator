@@ -171,6 +171,7 @@ void	m_dumpmem(Engine *, State *S, long, long);
 void	error(char *);
 void	help(Engine *);
 void	load_srec(Engine *, State *S, char *);
+void	load_mapfile(Engine *E, State *S, char *filename);
 void	loadcmds(Engine *, char *filename);
 void	man(Engine *, char *cmd);
 void	mbitprint(Engine *, State *S, short, ulong);
@@ -423,6 +424,16 @@ ushort 	superHreadword(Engine *, State *S, ulong addr);
 void 	superHwritelong(Engine *, State *S, ulong addr, ulong data);
 void 	superHwriteword(Engine *, State *S, ulong addr, ulong data);
 void	superHwritebyte(Engine *, State *S, ulong addr, ulong data);
+
+uchar 	riscVreadbyte(Engine *, State *S, ulong addr);
+ulong 	riscVreadlong(Engine *, State *S, ulong addr);
+ushort 	riscVreadword(Engine *, State *S, ulong addr);
+void 	riscVwritelong(Engine *, State *S, ulong addr, ulong data);
+void 	riscVwriteword(Engine *, State *S, ulong addr, ulong data);
+void	riscVwritebyte(Engine *, State *S, ulong addr, ulong data);
+void    riscVcache_deactivate(Engine *, State *S);
+int     riscVcache_init(Engine *, State *S, int size, int blocksize, int assoc);
+void	riscVvmtranslate(Engine *E, State *S, int op, TransAddr *tr);
 
 ulong	devportreadlong(Engine *E, State *S, ulong addr);
 ushort	devportreadword(Engine *E, State *S, ulong addr);
@@ -782,6 +793,18 @@ void 	riscv_csrrwi(Engine *E, State *S);
 void 	riscv_csrrsi(Engine *E, State *S);
 void 	riscv_csrrci(Engine *E, State *S);
 
+/*													*/
+/*			RISC-V RV32M additional functions		*/
+/*													*/
+void riscv_mul(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd);
+void riscv_mulh(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd);
+void riscv_mulhsu(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd);
+void riscv_mulhu(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd);
+void riscv_div(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd);
+void riscv_divu(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd);
+void riscv_rem(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd);
+void riscv_remu(Engine *E, State *S, uint8_t rs1, uint8_t rs2, uint8_t rd);
+
 /*									*/
 /*			RISC-V RV32F additional functions		*/
 /*									*/
@@ -879,7 +902,7 @@ double		Histogram_MeanFrequency(Engine *E, State *S, Histogram *histogram);
  *	Uncertainty propagation equation arithmetic
  */
 int		uncertain_print_system(UncertainState * state, FILE *stream);
-void		uncertain_sizemen(Engine *E, State *S, int size);
+void		uncertain_sizemem(Engine *E, State *S, int size);
 void		uncertain_inst_lr(UncertainState * state, int ud, int location);
 void		uncertain_inst_sr(UncertainState * state, int us1, int location);
 void		uncertain_inst_mv(UncertainState * state, int ud, int us1);
